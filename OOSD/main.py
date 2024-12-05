@@ -14,7 +14,7 @@ class SdModel:
         self.tables = {}
 
     def add_stock(self, name, initial,  units, 
-                  inflow, outflow, biflow):
+                  inflow=[], outflow=[], biflow=[]):
         pass
 
     def add_flow(self, name, equation):
@@ -25,7 +25,5 @@ class SdModel:
 
     def add_table(self):
         pass
-
-
 
 #carta de intención + curriculum vitae
