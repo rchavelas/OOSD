@@ -1,7 +1,14 @@
 class SdModel:
-    ''' This class helps build Systems Dynamics models in Python '''
+    ''' 
+    
+    This class helps build Systems Dynamics models in Python 
+    
+    It complies with the XMILE standard
 
-    def __init__(self, name, start, end, dt, save_step, time_units):
+    '''
+
+    def __init__(self, name, start, end, dt, 
+                 save_step=None, time_units=None):
         self.name = name
         self.start = start
         self.end = end
@@ -13,14 +20,14 @@ class SdModel:
         self.auxiliaries = {}
         self.tables = {}
 
-    def add_stock(self, name, initial,  units, 
-                  inflow=[], outflow=[], biflow=[]):
+    def add_stock(self, name, initial,  units=None, 
+                  inflow=None, outflow=None, biflow=None):
         pass
 
-    def add_flow(self, name, equation):
+    def add_flow(self, name, equation, units=None):
         pass
 
-    def add_auxiliary(self, name, equation, units):
+    def add_auxiliary(self, name, equation, units=None):
         pass
 
     def add_table(self):
