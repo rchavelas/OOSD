@@ -18,5 +18,4 @@ sdm.add_flow(name="from_plumbing", eqn="2", units="liters/minute")
 sdm.add_auxiliary(name="delay", eqn=2, units="minutes")
 sdm.add_auxiliary(name="initial", eqn=500, units="liters")
 
-print(type(sdm))
-
+print(sdm)

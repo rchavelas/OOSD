@@ -17,4 +17,4 @@ Currently, it doesn't support
 * Styles
 * ...
 
-[xmile-v1.0] XML Interchange Language for System Dynamics (XMILE) Version 1.0. Edited by Karim Chichakly, Gary Baxter, Robert Eberlein, Will Glass-Husain, Robert Powers, and William Schoenberg. 14 December 2015. OASIS Standard. http://docs.oasis-open.org/xmile/xmile/v1.0/os/xmile-v1.0-os.html. Latest version: http://docs.oasis-open.org/xmile/xmile/v1.0/xmile-v1.0.html.
+XML Interchange Language for System Dynamics (XMILE) Version 1.0. Edited by Karim Chichakly, Gary Baxter, Robert Eberlein, Will Glass-Husain, Robert Powers, and William Schoenberg. 14 December 2015. OASIS Standard. http://docs.oasis-open.org/xmile/xmile/v1.0/os/xmile-v1.0-os.html. Latest version: http://docs.oasis-open.org/xmile/xmile/v1.0/xmile-v1.0.html.
