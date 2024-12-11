@@ -31,9 +31,8 @@ class SdModel:
         self.time_units = time_units
         self.XML_rep = xml.dom.minidom.parseString(base_XML_str)
 
-    def add_stock(self, name, eqn=None, units=None, 
-                  inflow=None, outflow=None, biflow=None,
-                  non_negative=True):
+    def add_stock(self, name, eqn=None,  
+                  inflow=None, outflow=None):
         # Create stock tag
         stock_tag = base_XML.createElement("stock")
         stock_tag.setAttribute("name", name)
@@ -74,15 +73,49 @@ class SdModel:
         #else outflow: (raise not supported type)
 
         # Append stock to model
-        model = self.XML_rep.getElementsByTagName('model')[0]
+        model = self.XML_rep.getElementsByTagName("model")[0]
         model.appendChild(stock_tag)
 
 
-    def add_flow(self, name, eqn, units=None, non_negative=True):
-        pass
+    def add_flow(self, name, eqn=None):
+        # Create flow tag
+        flow_tag = base_XML.createElement("flow")
+        flow_tag.setAttribute("name", name)
 
-    def add_auxiliary(self, name, eqn, units=None, gf=None):
-        pass
+        # Create and append eqn tag
+        if eqn and isinstance(eqn, str):
+            eqn_tag = base_XML.createElement("eqn")
+            eqn_tag.appendChild(base_XML.createTextNode(eqn))
+            flow_tag.appendChild(eqn_tag)
+        elif eqn and (isinstance(eqn, int) or isinstance(eqn, float)):
+            eqn_tag = base_XML.createElement("eqn")
+            eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
+            flow_tag.appendChild(eqn_tag)
+        #else eqn: (raise not supported type)
+
+        # Append flow to model
+        model = self.XML_rep.getElementsByTagName("model")[0]
+        model.appendChild(flow_tag)
+
+    def add_auxiliary(self, name, eqn=None):
+        # Create aux tag
+        aux_tag = base_XML.createElement("aux")
+        aux_tag.setAttribute("name", name)
+
+        # Create and append eqn tag
+        if eqn and isinstance(eqn, str):
+            eqn_tag = base_XML.createElement("eqn")
+            eqn_tag.appendChild(base_XML.createTextNode(eqn))
+            aux_tag.appendChild(eqn_tag)
+        elif eqn and (isinstance(eqn, int) or isinstance(eqn, float)):
+            eqn_tag = base_XML.createElement("eqn")
+            eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
+            aux_tag.appendChild(eqn_tag)
+        #else eqn: (raise not supported type)
+
+        # Append aux to model
+        model = self.XML_rep.getElementsByTagName("model")[0]
+        model.appendChild(aux_tag)
 
     def __str__(self):
         return self.XML_rep.toprettyxml()
