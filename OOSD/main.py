@@ -6,6 +6,8 @@ base_XML_str="""
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0">
 <header>
 </header>
+<sim_specs>
+</sim_specs>
 <model>
 </model>
 </xmile>
@@ -23,13 +25,33 @@ class SdModel:
     '''
 
     def __init__(self, name, start=None, stop=None, dt=None, 
-                 save_step=None, time_units=None):
-        self.name = name
-        self.start = start
-        self.stop = stop
-        self.dt = dt
-        self.time_units = time_units
+                 method="Euler", time_units=None):
         self.XML_rep = xml.dom.minidom.parseString(base_XML_str)
+
+        # Create name tag and append it to header
+        name_tag = base_XML.createElement("name")
+        name_tag.appendChild(base_XML.createTextNode(name))
+        self.XML_rep.getElementsByTagName("header")[0].appendChild(name_tag)
+
+        # Create and append sim_specs elements
+        sim_specs = self.XML_rep.getElementsByTagName("sim_specs")[0]
+        ## Method and time_units attributes
+        sim_specs.setAttribute("method", method)
+        if time_units is not None:
+            sim_specs.setAttribute("time_units", time_units)
+        ## Start, stop and dt tags
+        if start is not None:
+            start_tag = base_XML.createElement("start")
+            start_tag.appendChild(base_XML.createTextNode(str(start)))
+            sim_specs.appendChild(start_tag)
+        if stop is not None:
+            stop_tag = base_XML.createElement("stop")
+            stop_tag.appendChild(base_XML.createTextNode(str(stop)))
+            sim_specs.appendChild(stop_tag)
+        if dt is not None:
+            dt_tag = base_XML.createElement("dt")
+            dt_tag.appendChild(base_XML.createTextNode(str(dt)))
+            sim_specs.appendChild(dt_tag)
 
     def add_stock(self, name, eqn=None,  
                   inflow=None, outflow=None):
@@ -38,35 +60,35 @@ class SdModel:
         stock_tag.setAttribute("name", name)
         
         # Create and append eqn tag
-        if eqn and isinstance(eqn, str):
+        if eqn is not None and isinstance(eqn, str):
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(eqn))
             stock_tag.appendChild(eqn_tag)
-        elif eqn and (isinstance(eqn, int) or isinstance(eqn, float)):
+        elif eqn is not None and (isinstance(eqn, int) or isinstance(eqn, float)):
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
             stock_tag.appendChild(eqn_tag)
         #else eqn: (raise not supported type)
 
         # Create and append inflow tag
-        if inflow and isinstance(inflow, list):
+        if inflow is not None and isinstance(inflow, list):
             for elem in inflow:
                 inflow_tag = base_XML.createElement("inflow")
                 inflow_tag.appendChild(base_XML.createTextNode(elem))
                 stock_tag.appendChild(inflow_tag)
-        elif inflow and isinstance(inflow, str):
+        elif inflow is not None and isinstance(inflow, str):
             inflow_tag = base_XML.createElement("inflow")
             inflow_tag.appendChild(base_XML.createTextNode(inflow))
             stock_tag.appendChild(inflow_tag)
         #else inflow: (raise not supported type)
 
         # Create and append outflow tag
-        if outflow and isinstance(outflow, list):
+        if outflow is not None and isinstance(outflow, list):
             for elem in outflow:
                 outflow_tag = base_XML.createElement("outflow")
                 outflow_tag.appendChild(base_XML.createTextNode(elem))
                 stock_tag.appendChild(outflow_tag)
-        elif inflow and isinstance(outflow, str):
+        elif outflow is not None and isinstance(outflow, str):
             outflow_tag = base_XML.createElement("outflow")
             outflow_tag.appendChild(base_XML.createTextNode(outflow))
             stock_tag.appendChild(outflow_tag)
@@ -76,18 +98,17 @@ class SdModel:
         model = self.XML_rep.getElementsByTagName("model")[0]
         model.appendChild(stock_tag)
 
-
     def add_flow(self, name, eqn=None):
         # Create flow tag
         flow_tag = base_XML.createElement("flow")
         flow_tag.setAttribute("name", name)
 
         # Create and append eqn tag
-        if eqn and isinstance(eqn, str):
+        if eqn is not None and isinstance(eqn, str):
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(eqn))
             flow_tag.appendChild(eqn_tag)
-        elif eqn and (isinstance(eqn, int) or isinstance(eqn, float)):
+        elif eqn is not None and (isinstance(eqn, int) or isinstance(eqn, float)):
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
             flow_tag.appendChild(eqn_tag)
@@ -103,11 +124,11 @@ class SdModel:
         aux_tag.setAttribute("name", name)
 
         # Create and append eqn tag
-        if eqn and isinstance(eqn, str):
+        if eqn is not None and isinstance(eqn, str):
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(eqn))
             aux_tag.appendChild(eqn_tag)
-        elif eqn and (isinstance(eqn, int) or isinstance(eqn, float)):
+        elif eqn is not None and (isinstance(eqn, int) or isinstance(eqn, float)):
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
             aux_tag.appendChild(eqn_tag)
