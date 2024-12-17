@@ -27,6 +27,8 @@ base_XML_str="""
 <sim_specs>
 </sim_specs>
 <model>
+<variables>
+</variables>
 </model>
 </xmile>
 """.replace("\n", "")
@@ -59,6 +61,9 @@ class SdModel:
 
         self.XML_rep = xml.dom.minidom.parseString(base_XML_str)
         """This attribute holds the XML representation of the whole model """
+        self.name = name
+        """This attribute holds the name of the model so that the
+        XML file gets the same name as the model"""
 
         # Create name tag and append it to header
         name_tag = base_XML.createElement("name")
@@ -145,7 +150,7 @@ class SdModel:
         #else outflow: (raise not supported type)
 
         # Append stock to model
-        model = self.XML_rep.getElementsByTagName("model")[0]
+        model = self.XML_rep.getElementsByTagName("variables")[0]
         model.appendChild(stock_tag)
 
     def add_flow(self, name: str, eqn: str | int | float = None):
@@ -176,7 +181,7 @@ class SdModel:
         #else eqn: (raise not supported type)
 
         # Append flow to model
-        model = self.XML_rep.getElementsByTagName("model")[0]
+        model = self.XML_rep.getElementsByTagName("variables")[0]
         model.appendChild(flow_tag)
 
     def add_auxiliary(self, name: str, eqn: str | int | float = None):
@@ -207,8 +212,12 @@ class SdModel:
         #else eqn: (raise not supported type)
 
         # Append aux to model
-        model = self.XML_rep.getElementsByTagName("model")[0]
+        model = self.XML_rep.getElementsByTagName("variables")[0]
         model.appendChild(aux_tag)
+
+    def save_xmile(self) -> None:
+        with open(f"{self.name}.XMILE", 'w') as f:
+            f.write(self.XML_rep.toprettyxml())
 
     def __str__(self) -> str:
         return self.XML_rep.toprettyxml()
