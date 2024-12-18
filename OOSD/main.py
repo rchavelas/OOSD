@@ -1,12 +1,9 @@
 """
 This module implements a class (SdModel) to build Systems Dynamics 
-models that comply with the  [xmile-v1.0] open standard. The class 
+models that comply with the [xmile-v1.0] open standard. The class 
 is meant to simplify the creation of Systems Dynamics models encapsulating
 the requirements of the XMILE standard into a class with easy to use
-methods (thus, in an object-oriented way).
-
-TODO:
-    - double-check first three methods
+methods in python (thus, in an object-oriented way).
 
 References:
     XML Interchange Language for System Dynamics (XMILE) Version 1.0. 
@@ -23,6 +20,8 @@ import xml.dom.minidom
 base_XML_str="""
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0">
 <header>
+<vendor>Ricardo Chavelas Manzo</vendor>
+<product version="0.0.1">OOSD</product>
 </header>
 <sim_specs>
 </sim_specs>
@@ -33,21 +32,23 @@ base_XML_str="""
 </xmile>
 """.replace("\n", "")
 
-# Read base XML file
+# Parse base XML file
 base_XML=xml.dom.minidom.parseString(base_XML_str)
 
 class SdModel:
-    """ A class to build XMILE Compliant Systems Dynamics models in Python 
+    """ 
+    A class to build XMILE compliant Systems Dynamics models in Python 
     """
 
     def __init__(self, name: str, start: int | float = None,
-                stop: int | float = None, dt: int | float = None, 
+                 stop: int | float = None, dt: int | float = None, 
                  method: str = "Euler", time_units: str = None) -> None:
         """Create an instance of the SdModel class.
         
         To build a Systems Dynamics model compliant with the XMILE 
         standard a ``name`` is REQUIRED. The ``start``, ``stop`` and ``dt`` 
-        arguments are also required for the simulation to run.
+        arguments are also required for the simulation to run. Other
+        arguments are optional.
 
         Args:
             name (str): Name of the whole model.
@@ -60,10 +61,10 @@ class SdModel:
         # Break if arguments are not of the required classes
 
         self.XML_rep = xml.dom.minidom.parseString(base_XML_str)
-        """This attribute holds the XML representation of the whole model """
+        """This attribute holds the XML representation of the whole model"""
         self.name = name
         """This attribute holds the name of the model so that the
-        XML file gets the same name as the model"""
+        XMILE file gets the same name as the model"""
 
         # Create name tag and append it to header
         name_tag = base_XML.createElement("name")
@@ -90,7 +91,8 @@ class SdModel:
             dt_tag.appendChild(base_XML.createTextNode(str(dt)))
             sim_specs.appendChild(dt_tag)
 
-    def add_stock(self, name: str, eqn: str | int | float = None,  
+    def add_stock(self, name: str, eqn: str | int | float = None,
+                  doc: str = None,
                   inflow: str | list[str] = None, 
                   outflow: str | list[str] = None):
         """Append a stock to the whole model in the SdModel class.
@@ -105,10 +107,11 @@ class SdModel:
         Args:
             name (str): Name of the stock.
             eqn (str | int | float, optional): Initial value of the stock.
+            doc (str): Documentation of the stock
             inflow (str | list[str], optional): Inflow or inflows of the stock.
             outflow (str | list[str], optional): Outflow or outflows of the stock.
         """
-        # Break if arguments are not of the required classes
+        # Break if arguments are not of the required type
 
         # Create stock tag
         stock_tag = base_XML.createElement("stock")
@@ -123,7 +126,6 @@ class SdModel:
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
             stock_tag.appendChild(eqn_tag)
-        #else eqn: (raise not supported type)
 
         # Create and append inflow tag
         if inflow is not None and isinstance(inflow, list):
@@ -135,7 +137,6 @@ class SdModel:
             inflow_tag = base_XML.createElement("inflow")
             inflow_tag.appendChild(base_XML.createTextNode(inflow))
             stock_tag.appendChild(inflow_tag)
-        #else inflow: (raise not supported type)
 
         # Create and append outflow tag
         if outflow is not None and isinstance(outflow, list):
@@ -147,13 +148,19 @@ class SdModel:
             outflow_tag = base_XML.createElement("outflow")
             outflow_tag.appendChild(base_XML.createTextNode(outflow))
             stock_tag.appendChild(outflow_tag)
-        #else outflow: (raise not supported type)
+
+        # Create and append doc tag
+        if doc is not None:
+            doc_tag = base_XML.createElement("doc")
+            doc_tag.appendChild(base_XML.createTextNode(doc))
+            stock_tag.appendChild(doc_tag)
 
         # Append stock to model
         model = self.XML_rep.getElementsByTagName("variables")[0]
         model.appendChild(stock_tag)
 
-    def add_flow(self, name: str, eqn: str | int | float = None):
+    def add_flow(self, name: str, eqn: str | int | float = None,
+                 doc: str = None):
         """Append a flow to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -162,8 +169,9 @@ class SdModel:
         Args:
             name (str): Name of the flow.
             eqn (str | int | float, optional): Equation of the flow.
+            doc (str): Documentation of the flow.
         """
-        # Break if arguments are not of the required classes
+        # Break if arguments are not of the required types
 
         # Create flow tag
         flow_tag = base_XML.createElement("flow")
@@ -178,13 +186,19 @@ class SdModel:
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
             flow_tag.appendChild(eqn_tag)
-        #else eqn: (raise not supported type)
+
+        # Create and append doc tag
+        if doc is not None:
+            doc_tag = base_XML.createElement("doc")
+            doc_tag.appendChild(base_XML.createTextNode(doc))
+            flow_tag.appendChild(doc_tag)
 
         # Append flow to model
         model = self.XML_rep.getElementsByTagName("variables")[0]
         model.appendChild(flow_tag)
 
-    def add_auxiliary(self, name: str, eqn: str | int | float = None):
+    def add_auxiliary(self, name: str, eqn: str | int | float = None,
+                      doc: str = None):
         """Append an auxiliary to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -193,8 +207,9 @@ class SdModel:
         Args:
             name (str): Name of the auxiliary.
             eqn (str | int | float, optional): Equation of the auxiliary.
+            doc (str): Documentation of the auxiliary.
         """
-        # Break if arguments are not of the required classes
+        # Break if arguments are not of the required types
 
         # Create aux tag
         aux_tag = base_XML.createElement("aux")
@@ -209,7 +224,12 @@ class SdModel:
             eqn_tag = base_XML.createElement("eqn")
             eqn_tag.appendChild(base_XML.createTextNode(str(eqn)))
             aux_tag.appendChild(eqn_tag)
-        #else eqn: (raise not supported type)
+
+        # Create and append doc tag
+        if doc is not None:
+            doc_tag = base_XML.createElement("doc")
+            doc_tag.appendChild(base_XML.createTextNode(doc))
+            aux_tag.appendChild(doc_tag)
 
         # Append aux to model
         model = self.XML_rep.getElementsByTagName("variables")[0]
