@@ -5,6 +5,9 @@ is meant to simplify the creation of Systems Dynamics models encapsulating
 the requirements of the XMILE standard into a class with easy to use
 methods in python (thus, in an object-oriented way).
 
+#TODO
+- Upload first version of package to PyPi
+
 References:
     XML Interchange Language for System Dynamics (XMILE) Version 1.0. 
     Edited by Karim Chichakly, Gary Baxter, Robert Eberlein, Will 
@@ -25,6 +28,8 @@ base_XML_str="""
 </header>
 <sim_specs>
 </sim_specs>
+<model_units>
+</model_units>
 <model>
 <variables>
 </variables>
@@ -94,7 +99,8 @@ class SdModel:
     def add_stock(self, name: str, eqn: str | int | float = None,
                   doc: str = None,
                   inflow: str | list[str] = None, 
-                  outflow: str | list[str] = None):
+                  outflow: str | list[str] = None,
+                  unit: str = None):
         """Append a stock to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -110,6 +116,7 @@ class SdModel:
             doc (str): Documentation of the stock
             inflow (str | list[str], optional): Inflow or inflows of the stock.
             outflow (str | list[str], optional): Outflow or outflows of the stock.
+            unit (str): Unit of measurement of the stock.
         """
         # Break if arguments are not of the required type
 
@@ -160,7 +167,8 @@ class SdModel:
         model.appendChild(stock_tag)
 
     def add_flow(self, name: str, eqn: str | int | float = None,
-                 doc: str = None):
+                 doc: str = None,
+                 unit: str = None):
         """Append a flow to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -170,6 +178,7 @@ class SdModel:
             name (str): Name of the flow.
             eqn (str | int | float, optional): Equation of the flow.
             doc (str): Documentation of the flow.
+            unit (str): Unit of measure of the flow.
         """
         # Break if arguments are not of the required types
 
@@ -198,7 +207,8 @@ class SdModel:
         model.appendChild(flow_tag)
 
     def add_auxiliary(self, name: str, eqn: str | int | float = None,
-                      doc: str = None):
+                      doc: str = None,
+                      unit: str = None):
         """Append an auxiliary to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -208,6 +218,7 @@ class SdModel:
             name (str): Name of the auxiliary.
             eqn (str | int | float, optional): Equation of the auxiliary.
             doc (str): Documentation of the auxiliary.
+            unit (str): Unit of measurement of the auxiliary.
         """
         # Break if arguments are not of the required types
 
