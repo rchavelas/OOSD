@@ -6,6 +6,7 @@ the requirements of the XMILE standard into a class with easy to use
 methods in python (thus, in an object-oriented way).
 
 #TODO
+- Implement unit definition
 - Upload first version of package to PyPi
 
 References:
@@ -100,7 +101,7 @@ class SdModel:
                   doc: str = None,
                   inflow: str | list[str] = None, 
                   outflow: str | list[str] = None,
-                  unit: str = None):
+                  units: str = None):
         """Append a stock to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -116,7 +117,7 @@ class SdModel:
             doc (str): Documentation of the stock
             inflow (str | list[str], optional): Inflow or inflows of the stock.
             outflow (str | list[str], optional): Outflow or outflows of the stock.
-            unit (str): Unit of measurement of the stock.
+            units (str): Unit of measure of the stock.
         """
         # Break if arguments are not of the required type
 
@@ -162,13 +163,19 @@ class SdModel:
             doc_tag.appendChild(base_XML.createTextNode(doc))
             stock_tag.appendChild(doc_tag)
 
+        # Create and append units tag
+        if units is not None:
+            units_tag = base_XML.createElement("units")
+            units_tag.appendChild(base_XML.createTextNode(units))
+            stock_tag.appendChild(units_tag)
+
         # Append stock to model
         model = self.XML_rep.getElementsByTagName("variables")[0]
         model.appendChild(stock_tag)
 
     def add_flow(self, name: str, eqn: str | int | float = None,
                  doc: str = None,
-                 unit: str = None):
+                 units: str = None):
         """Append a flow to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -178,7 +185,7 @@ class SdModel:
             name (str): Name of the flow.
             eqn (str | int | float, optional): Equation of the flow.
             doc (str): Documentation of the flow.
-            unit (str): Unit of measure of the flow.
+            units (str): Unit of measure of the flow.
         """
         # Break if arguments are not of the required types
 
@@ -202,13 +209,19 @@ class SdModel:
             doc_tag.appendChild(base_XML.createTextNode(doc))
             flow_tag.appendChild(doc_tag)
 
+        # Create and append units tag
+        if units is not None:
+            units_tag = base_XML.createElement("units")
+            units_tag.appendChild(base_XML.createTextNode(units))
+            flow_tag.appendChild(units_tag)
+
         # Append flow to model
         model = self.XML_rep.getElementsByTagName("variables")[0]
         model.appendChild(flow_tag)
 
     def add_auxiliary(self, name: str, eqn: str | int | float = None,
                       doc: str = None,
-                      unit: str = None):
+                      units: str = None):
         """Append an auxiliary to the whole model in the SdModel class.
 
         Note that the ``equation`` can be a string, an integer or a float,
@@ -218,7 +231,7 @@ class SdModel:
             name (str): Name of the auxiliary.
             eqn (str | int | float, optional): Equation of the auxiliary.
             doc (str): Documentation of the auxiliary.
-            unit (str): Unit of measurement of the auxiliary.
+            units (str): Unit of measure of the auxiliary.
         """
         # Break if arguments are not of the required types
 
@@ -241,6 +254,12 @@ class SdModel:
             doc_tag = base_XML.createElement("doc")
             doc_tag.appendChild(base_XML.createTextNode(doc))
             aux_tag.appendChild(doc_tag)
+
+        # Create and append units tag
+        if units is not None:
+            units_tag = base_XML.createElement("units")
+            units_tag.appendChild(base_XML.createTextNode(units))
+            aux_tag.appendChild(units_tag)
 
         # Append aux to model
         model = self.XML_rep.getElementsByTagName("variables")[0]
