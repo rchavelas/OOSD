@@ -6,10 +6,10 @@ XMILE standard
 '''
 
 from OOSD import SdModel
-from OOSD import gf
 
 # Hares example
-sdm_hrs = SdModel(name="Hares")
+sdm_hrs = SdModel(name="Ex2_Hares",
+                  start=0, stop=12, dt=1)
 
 # STOCKS
 sdm_hrs.add_stock(name="Hares", eqn=5E4, 
@@ -21,14 +21,19 @@ sdm_hrs.add_flow(name="hare_births", eqn="Hares*hare_birth_fraction")
 sdm_hrs.add_flow(name="hare_deaths", eqn="Lynx*hares_killed_per_lynx")
 
 # AUX Variables
-sdm_hrs.add_auxiliary(name="hare_birth\nfraction",eqn=1.25)
-sdm_hrs.add_auxiliary(name="hare\ndensity",eqn="Hares/area")
+sdm_hrs.add_auxiliary(name="hare_birth_fraction",eqn=1.25)
+sdm_hrs.add_auxiliary(name="hare_density",eqn="Hares/area")
 sdm_hrs.add_auxiliary(name="area",eqn=1E3)
 
-# AUX Variables with graphical function
-hares_killed_per_lynx_gf = gf.linear(xmin=0, xmax=500, 
-                                     ymin=0, ymax=1000,
-                                     ypts=[0,50,100,150,200,250,300,350,400,450,500])
-sdm_hrs.add_auxiliary(name="hares_killed\nper_lynx", eqn="hare_density",
-                      gf=hares_killed_per_lynx_gf)
+# GF
+sdm_hrs.add_continous_gf(name="hares_killed_per_lynx_gf",
+                         xscale=(0, 500), 
+                         yscale=(0, 1000),
+                         ypts=[0,50,100,150,200,250,
+                               300,350,400,450,500])
+'''
+'''
 
+sdm_hrs.add_auxiliary(name="hares_killed_per_lynx", eqn="hare_density")
+
+sdm_hrs.save_xmile()

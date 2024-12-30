@@ -6,8 +6,8 @@ the requirements of the XMILE standard into a class with easy to use
 methods in python (thus, in an object-oriented way).
 
 #TODO
-- Implement unit definition
 - Upload first version of package to PyPi
+- Implement graphical functions
 
 References:
     XML Interchange Language for System Dynamics (XMILE) Version 1.0. 
@@ -220,6 +220,7 @@ class SdModel:
         model.appendChild(flow_tag)
 
     def add_auxiliary(self, name: str, eqn: str | int | float = None,
+                      gf = None,
                       doc: str = None,
                       units: str = None):
         """Append an auxiliary to the whole model in the SdModel class.
@@ -230,6 +231,7 @@ class SdModel:
         Args:
             name (str): Name of the auxiliary.
             eqn (str | int | float, optional): Equation of the auxiliary.
+            gf ( ,optional): Name of the graphical function
             doc (str): Documentation of the auxiliary.
             units (str): Unit of measure of the auxiliary.
         """
@@ -260,6 +262,10 @@ class SdModel:
             units_tag = base_XML.createElement("units")
             units_tag.appendChild(base_XML.createTextNode(units))
             aux_tag.appendChild(units_tag)
+
+        # Create and append  gf tag
+        if gf is not None:
+            aux_tag.appendChild(gf)
 
         # Append aux to model
         model = self.XML_rep.getElementsByTagName("variables")[0]
